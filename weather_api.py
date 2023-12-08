@@ -108,17 +108,18 @@ def get_weather(location_info):
         result["status"] = f'Internal Error when parsing weather!'
 
     return result
-    
-    
+
+
 def get_weather_result(result):
     local_delta = timedelta(seconds=result["timezone"])
     local_tz = timezone(local_delta)
     local_dt = datetime.fromtimestamp(result["timestamp"], tz=local_tz)
     lines = [
-        f'* Local time:   {local_dt.strftime("%d.%m.%Y - %H:%M:%S")}',
+        f'* Local time:   {local_dt.strftime("%d-%m-%Y %H:%M:%S %Z")}',
         f'* City:         {result["city"]}',
         f'* Weather:      {result["weather"]["main"]} ({result["weather"]["description"]})',
-        f'* Temperature: {result["weather"]["temp_actual"] : .0f}°C (Feels like {result["weather"]["temp_feels"] : .0f}°C)',
+        f'* Temperature: {result["weather"]["temp_actual"] : .0f}°C',
+        f'* Feels like   {result["weather"]["temp_feels"] : .0f}°C',
         f'* Wind speed:   {result["weather"]["wind_speed"]} m/sec'
     ]
     message = '\n'.join(lines)

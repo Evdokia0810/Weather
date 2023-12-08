@@ -17,7 +17,7 @@ def dump(command, args, response, success):
     text = command + ' ' + ' '.join([str(arg) for arg in args])
     new_row = pd.DataFrame({
         'success': [success],
-        'timestamp': [ts.strftime('%d.%m.%Y %H:%M:%S')],
+        'timestamp': [ts.strftime('%Y-%m-%d %H:%M:%S')],
         'request': [sanitize(text)],
         'response': [sanitize(response)]
     })
@@ -34,12 +34,14 @@ def read_latest(n_latest):
         df = pd.read_csv(FILE_NAME, index_col=[0]);
         df_cropped = df.tail(n_latest)
         lines = []
+        idx = 1
         for _, row in df_cropped[::-1].iterrows():
             status = "SUCCESS" if row["success"] else "FAILED "
             time = row["timestamp"]
             request = row["request"]
             response = row["response"].replace('\t', '\n')
-            lines.append(f'{time} | {status} | {request}\n{response}')
+            lines.append(f'[ {idx} ]  {time} | {status} | {request}\n{response}')
+            idx += 1
         return '\n\n'.join(lines)
         
     except FileNotFoundError:
